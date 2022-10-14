@@ -1,0 +1,53 @@
+package com.servico.ativo.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+import com.servico.ativo.model.EmailModel;
+import com.servico.ativo.model.StatusEmail;
+import com.servico.ativo.repository.EmailRepository;
+
+@Service
+public class EmailService {
+	
+	@Autowired
+	private EmailRepository emailRepository;
+	
+	@Autowired
+	private JavaMailSender emailSender;
+	
+	@SuppressWarnings("finally")
+	public EmailModel sendEmail(EmailModel model) {
+		System.out.println("Enviando email");
+		model.setSendDateEmail(LocalDate.now());
+		
+		try {
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setFrom(model.getEmailFrom());
+			message.setTo(model.getEmailTo());
+			message.setSubject(model.getSubject());
+			message.setText(model.getText());
+			emailSender.send(message);
+			model.setStatusEmail(StatusEmail.SEND);
+		}catch (Exception e) {
+			model.setStatusEmail(StatusEmail.ERROR);
+		}finally {
+			return emailRepository.save(model);
+		}
+	}
+	
+	public List<EmailModel> getEmail(){
+		
+		return emailRepository.findAll();
+	}
+
+	public List<EmailModel> getEmailByData(LocalDate data) {
+		// TODO Auto-generated method stub
+		return emailRepository.findBySendDateEmail(data);
+	}
+}

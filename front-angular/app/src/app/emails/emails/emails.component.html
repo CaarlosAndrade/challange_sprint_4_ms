@@ -1,0 +1,40 @@
+<div class="container">
+  <form [formGroup]="searchDate" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="data">Digite a data</label>
+      <input type="date" class="form-control" name="data" id="data" formControlName="data">
+    </div>
+    <button type="submit" class="btn btn-success mr-3" [disabled]="!searchDate.valid">Filtrar</button>
+    <button (click)="getEmails()" type="button" class="btn btn-success mr-3">Limpar Filtro</button>
+    <button (click)="getEmails()" type="button" class="btn btn-success mr-3">Recarregar Relatório</button>
+  </form>
+  <table mat-table #table [dataSource]="emails">
+    <ng-container matColumnDef="enviadoPor">
+      <th mat-header-cell *matHeaderCellDef> Enviado Para </th>
+      <td mat-cell *matCellDef="let row"> {{row.emailFrom}} </td>
+    </ng-container>
+    <ng-container matColumnDef="recebidoPor">
+      <th mat-header-cell *matHeaderCellDef> Enviado Por </th>
+      <td mat-cell *matCellDef="let row"> {{row.emailTo}} </td>
+    </ng-container>
+    <ng-container matColumnDef="assunto">
+      <th mat-header-cell *matHeaderCellDef> Assunto </th>
+      <td mat-cell *matCellDef="let row"> {{row.subject}} </td>
+    </ng-container>
+    <ng-container matColumnDef="corpo">
+      <th mat-header-cell *matHeaderCellDef> Corpo </th>
+      <td mat-cell *matCellDef="let row"> {{row.text}} </td>
+    </ng-container>
+    <ng-container matColumnDef="dataEnvio">
+      <th mat-header-cell *matHeaderCellDef> DataEnvio </th>
+      <td mat-cell *matCellDef="let row"> {{row.sendDateEmail}} </td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let row"> {{row.statusEmail}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['enviadoPor', 'recebidoPor', 'assunto', 'corpo', 'dataEnvio', 'status']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['enviadoPor', 'recebidoPor', 'assunto', 'corpo', 'dataEnvio', 'status']">
+    </tr>
+  </table>
+</div>
